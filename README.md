@@ -1,3 +1,14 @@
+Literacy-Lagoon is a website for helping my kids learn to read and spell English
+
+# Current
+- home page
+- about
+- spalding muncher
+
+# Goals
+ - First game is Spalding Muncher
+   - this is a game based on the old number muncher but for focusing on spalding rules.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
