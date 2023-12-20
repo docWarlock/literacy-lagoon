@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "next": "14.0.3",
+    "phaser": "^3.70.0",
     "react": "^18",
     "react-dom": "^18",
     "styled-components": "^6.1.1"
@@ -20,6 +21,15 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.0.3",
+    "rimraf": "^5.0.5",
     "typescript": "^5"
+  },
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "strict": true
   }
 }

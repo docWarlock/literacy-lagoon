@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ScoreDisplay from './ScoreDisplay';
+import ScoreDisplay from '../../ScoreDisplay';
 
 interface GameComponentProps {
     difficulty: string;
@@ -11,7 +11,7 @@ const GameComponent: React.FC<GameComponentProps> = ({ difficulty }) => {
     const [playerPosition, setPlayerPosition] = useState({ x: 2, y: 2 });
     const [currentLevel, setCurrentLevel] = useState(1);
     const [currentChallenge, setCurrentChallenge] = useState('');
-    const [gameBoard, setGameBoard] = useState<string[][]>(createRandomGameBoard());
+    const [gameBoard, setGameBoard] = useState<string[][]>(createRandomGameBoard(currentChallenge));
     const [completedChallenges, setCompletedChallenges] = useState(0);
     const [gameOver, setGameOver] = useState(false);
 
@@ -152,27 +152,68 @@ const GameComponent: React.FC<GameComponentProps> = ({ difficulty }) => {
         }
     };
 
+    // const hasChallengeLettersLeft = (): boolean => {
+    //     for (let row = 0; row < 5; row++) {
+    //         for (let col = 0; col < 6; col++) {
+    //             if (gameBoard[row][col] === currentChallenge) {
+    //                 return true; // Challenge letter found, there are still challenge letters left
+    //             }
+    //         }
+    //     }
+    //     // If no challenge letters found, generate a new game board
+    //     return false;
+    // };
+    //
+    // const selectRandomChallenge = () => {
+    //     if (!hasChallengeLettersLeft()) {
+    //         // Regenerate a new game board if there are no challenge letters left
+    //         setGameBoard(createRandomGameBoard());
+    //     }
+    //
+    //     const randomIndex = Math.floor(Math.random() * alphabetChallenges.length);
+    //     setCurrentChallenge(alphabetChallenges[randomIndex]);
+    // };
+
     const hasChallengeLettersLeft = (): boolean => {
+        let count = 0;
         for (let row = 0; row < 5; row++) {
             for (let col = 0; col < 6; col++) {
                 if (gameBoard[row][col] === currentChallenge) {
-                    return true; // Challenge letter found, there are still challenge letters left
+                    count++;
+                    if (count === 5) {
+                        return true; // 5 challenge letters found, there are still challenge letters left
+                    }
                 }
             }
         }
-        // If no challenge letters found, generate a new game board
+        // If fewer than 5 challenge letters found, generate a new game board
         return false;
     };
 
     const selectRandomChallenge = () => {
-        if (!hasChallengeLettersLeft()) {
-            // Regenerate a new game board if there are no challenge letters left
-            setGameBoard(createRandomGameBoard());
+        const letterCount = gameBoard.flat().filter((letter) => letter === currentChallenge).length;
+
+        if (letterCount < 5) {
+            // Regenerate a new game board if there are fewer than 5 challenge letters left
+            setGameBoard(createRandomGameBoard(currentChallenge));
         }
 
-        const randomIndex = Math.floor(Math.random() * alphabetChallenges.length);
-        setCurrentChallenge(alphabetChallenges[randomIndex]);
+        // Now, select a random challenge as before
+        const remainingChallenges = alphabetChallenges.filter((letter) => letter !== currentChallenge);
+        const randomIndex = Math.floor(Math.random() * remainingChallenges.length);
+        setCurrentChallenge(remainingChallenges[randomIndex]);
     };
+
+    // const generateNewBoard = () => {
+    //     // Reset challenges completed counter
+    //     setCompletedChallenges(0);
+    //
+    //     // Generate a new challenge
+    //     selectRandomChallenge();
+    //
+    //     // Generate a new game board
+    //     setGameBoard(createRandomGameBoard());
+    // };
 
     const generateNewBoard = () => {
         // Reset challenges completed counter
@@ -181,9 +222,10 @@ const GameComponent: React.FC<GameComponentProps> = ({ difficulty }) => {
         // Generate a new challenge
         selectRandomChallenge();
 
-        // Generate a new game board
-        setGameBoard(createRandomGameBoard());
+        // Generate a new game board with exactly 5 instances of the challenge letter
+        setGameBoard(createRandomGameBoard(currentChallenge));
     };
+
 
     const clearSquare = () => {
         // Set the square to an empty string
@@ -209,7 +251,25 @@ const GameComponent: React.FC<GameComponentProps> = ({ difficulty }) => {
     }, [currentChallenge]);
 
     // Function to create a random game board with letters
-    function createRandomGameBoard(): string[][] {
+    // function createRandomGameBoard(): string[][] {
+    //     const newGameBoard: string[][] = [];
+    //
+    //     for (let row = 0; row < 5; row++) {
+    //         const newRow: string[] = [];
+    //         for (let col = 0; col < 6; col++) {
+    //             newRow.push(getRandomLetter());
+    //         }
+    //         newGameBoard.push(newRow);
+    //     }
+    //
+    //     // Set the player's starting position to an empty string
+    //     newGameBoard[playerPosition.y][playerPosition.x] = '';
+    //
+    //     return newGameBoard;
+    // }
+
+    // Function to create a random game board with letters
+    function createRandomGameBoard(challengeLetter: string): string[][] {
         const newGameBoard: string[][] = [];
 
         for (let row = 0; row < 5; row++) {
@@ -223,8 +283,23 @@ const GameComponent: React.FC<GameComponentProps> = ({ difficulty }) => {
         // Set the player's starting position to an empty string
         newGameBoard[playerPosition.y][playerPosition.x] = '';
 
+        // Place exactly 5 instances of the challenge letter randomly on the board
+        for (let count = 0; count < 5; count++) {
+            let placed = false;
+            while (!placed) {
+                const randomRow = Math.floor(Math.random() * 5);
+                const randomCol = Math.floor(Math.random() * 6);
+                if (newGameBoard[randomRow][randomCol] === '') {
+                    newGameBoard[randomRow][randomCol] = challengeLetter;
+                    placed = true;
+                }
+            }
+        }
+
         return newGameBoard;
     }
+
+
 
     // Function to get a random uppercase letter
     function getRandomLetter(): string {
