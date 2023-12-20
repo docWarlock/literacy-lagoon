@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
-import GameComponent from '../components/Game/archive/GameComponent';
+import GameComponent from '../components/Game/GameComponent';
 
 const Muncher: React.FC = () => {
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>('easy');

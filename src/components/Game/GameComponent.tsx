@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ScoreDisplay from '../../ScoreDisplay';
+import ScoreDisplay from '../ScoreDisplay';
 
 interface GameComponentProps {
     difficulty: string;
